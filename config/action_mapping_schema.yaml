@@ -1,0 +1,52 @@
+openapi: 3.0.0
+info:
+  title: Structured data Q&A API
+  version: 1.0.0
+  description: Allows Bedrock agent to access structured data to answer user questions
+paths:
+  /querydb:
+    get:
+      summary: Get answers using the available structured data store(s) 
+      description: Pulls metadata frin db, generates and sql, executes the sql, returns the results
+      operationId: querydb
+      parameters:
+        - name: question
+          in: query
+          description: User question
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: A response to the user query based on the data queried from a DB
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  youtuberStatsQuestion:
+                    type: string
+                    description: The question asked by the user.
+                  youtuberStatsResponse:
+                    type: string
+                    description: The response to the user question.
+        '400':
+          description: Bad Request - The request could not be understood or was missing required parameters.
+        '401':
+          description: Unauthorized - Authentication failed or user does not have permissions for the requested operation.
+        '403':
+          description: Forbidden - Access denied.
+        '500':
+          description: Internal Server Error - An unexpected error occurred.
+components:
+  schemas: {}
+  requestBodies: {}
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-KEY
+  links: {}
+  callbacks: {}
+security:
+  - ApiKeyAuth: []

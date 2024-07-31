@@ -9,8 +9,8 @@ logger.setLevel(logging.INFO)
 
 class Connections:
     region_name = "us-east-1"
-    athena_bucket_name = os.getenv("ATHENA_BUCKET_NAME", "d98-athena-results-us-east-1")
-    text2sql_database = os.getenv("TEXT2SQL_DATABASE", "d98-ai-agent")
+    athena_bucket_name = os.getenv("ATHENA_BUCKET_NAME")
+    text2sql_database = os.getenv("TEXT2SQL_DATABASE")
     log_level = os.getenv("LOG_LEVEL", "INFO")
     fewshot_examples_path = os.getenv(
         "FEWSHOT_EXAMPLES_PATH",

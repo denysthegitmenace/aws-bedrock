@@ -24,10 +24,10 @@ paths:
               schema:
                 type: object
                 properties:
-                  youtuberStatsQuestion:
+                  question:
                     type: string
                     description: The question asked by the user.
-                  youtuberStatsResponse:
+                  response:
                     type: string
                     description: The response to the user question.
         '400':
@@ -38,15 +38,3 @@ paths:
           description: Forbidden - Access denied.
         '500':
           description: Internal Server Error - An unexpected error occurred.
-components:
-  schemas: {}
-  requestBodies: {}
-  securitySchemes:
-    ApiKeyAuth:
-      type: apiKey
-      in: header
-      name: X-API-KEY
-  links: {}
-  callbacks: {}
-security:
-  - ApiKeyAuth: []

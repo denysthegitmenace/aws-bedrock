@@ -24,7 +24,6 @@ resource "aws_iam_role" "agent_service_role" {
     ]
   })
 
-
   managed_policy_arns = [
     aws_iam_policy.invoke_bedrock_fm_for_agent.arn,
   ]
@@ -52,4 +51,22 @@ resource "aws_iam_policy" "invoke_bedrock_fm_for_agent" {
         ]
       }
   ] })
+}
+
+resource "aws_iam_role" "query_structured_data_lambda" {
+  name        = "query_structured_data_lambda_role"
+  description = "For the lambda function to query structured data from Athena tables."
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = "sts:AssumeRole"
+        Effect = "Allow"
+        Sid    = ""
+        Principal = {
+          Service = "lambda.amazonaws.com"
+        }
+      },
+    ]
+  })
 }

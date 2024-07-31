@@ -9,9 +9,9 @@ terraform {
     }
   }
   backend "s3" {
-    bucket = "d98-bedrock-tf-state"
-    key    = "state"
-    region = "us-east-1"
+    bucket = "dod-iac"
+    key    = "bedrock-agent/state"
+    region = "eu-central-1"
   }
 }
 

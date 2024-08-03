@@ -9,6 +9,8 @@ resource "aws_lambda_function" "query_structured_data" {
   environment {
     variables = {
       LOG_LEVEL = "INFO"
+      ATHENA_BUCKET_NAME = "aws-athena-query-results-us-east-1-435301922904"
+      TARGET_DB = "main"
     }
   }
 }

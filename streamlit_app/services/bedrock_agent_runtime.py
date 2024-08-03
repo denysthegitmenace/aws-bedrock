@@ -1,6 +1,7 @@
 import boto3
 from botocore.exceptions import ClientError
 
+
 def invoke_agent(agent_id, agent_alias_id, session_id, prompt):
     try:
         client = boto3.session.Session().client(service_name="bedrock-agent-runtime")
@@ -27,7 +28,11 @@ def invoke_agent(agent_id, agent_alias_id, session_id, prompt):
 
             # Extract trace information from all events
             if "trace" in event:
-                for trace_type in ["preProcessingTrace", "orchestrationTrace", "postProcessingTrace"]:
+                for trace_type in [
+                    "preProcessingTrace",
+                    "orchestrationTrace",
+                    "postProcessingTrace",
+                ]:
                     if trace_type in event["trace"]["trace"]:
                         if trace_type not in trace:
                             trace[trace_type] = []
@@ -36,8 +41,4 @@ def invoke_agent(agent_id, agent_alias_id, session_id, prompt):
     except ClientError as e:
         raise
 
-    return {
-        "output_text": output_text,
-        "citations": citations,
-        "trace": trace
-    }
+    return {"output_text": output_text, "citations": citations, "trace": trace}

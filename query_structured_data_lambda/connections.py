@@ -10,7 +10,7 @@ logger.setLevel(logging.INFO)
 class Connections:
     region_name = "us-east-1"
     athena_bucket_name = os.getenv("ATHENA_BUCKET_NAME")
-    text2sql_database = os.getenv("TEXT2SQL_DATABASE")
+    text2sql_database = os.getenv("TARGET_DB")
     log_level = os.getenv("LOG_LEVEL", "INFO")
     fewshot_examples_path = os.getenv(
         "FEWSHOT_EXAMPLES_PATH",
@@ -41,8 +41,7 @@ class Connections:
                 "region_name": Connections.region_name,
             }
         )
+        logger.info("Getting access to the following model: {model_kwargs}")
 
         llm = Bedrock(**model_kwargs)
-        logger.info(f"Using follwoing FM: {model_kwargs}")
-
         return llm

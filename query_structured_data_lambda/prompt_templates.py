@@ -1,5 +1,12 @@
-table_details = {
-    "impect_data_cleaned": "Stats on football players and their game performance. The granularity is one row per game per player."
+TABLE_DETAILS = {
+    "customers": "Customers purchase products from employees",
+    "employees": "Employees sell products to customers",
+    "orders": "Events of customers purchasing from employees",
+    "products": "Products are supplied by vendors. Products belong to subcategories",
+    "vendors": "Vendors supply products",
+    "vendorproduct": "Use this table exclusively when joining with the 'vendors' table. Avoid using it in any other scenarios.",
+    "productcategories": "Product categories are made up of multiple product subcategories",
+    "productsubcategories": "Each product belongs to a product subcategory",
 }
 
 SQL_TEMPLATE_STR = """Given an input question, first create a syntactically correct {dialect} query to run, then look at the results of the query and return the answer.
@@ -13,6 +20,7 @@ SQL_TEMPLATE_STR = """Given an input question, first create a syntactically corr
     You are required to use the following format, each taking one line:\n\nQuestion: Question here\nSQLQuery: SQL Query to run\n
     SQLResult: Result of the SQLQuery\nAnswer: Final answer here\n\nOnly use tables listed below.\n{schema}\n\n
     Do not under any circumstance use SELECT * in your query.
+    If the user is asking about purchasing—interpret it as ordering.
 
     Here are some useful examples:
     {few_shot_examples}

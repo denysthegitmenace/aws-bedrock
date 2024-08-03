@@ -8,37 +8,37 @@ provider "docker" {
 }
 
 
-### streamlit start ###
-resource "aws_ecr_repository" "streamlit_app_repository" {
-  name                 = "streamlit-app"
-  image_tag_mutability = "MUTABLE"
+# ### streamlit start ###
+# resource "aws_ecr_repository" "streamlit_app_repository" {
+#   name                 = "streamlit-app"
+#   image_tag_mutability = "MUTABLE"
 
-  image_scanning_configuration {
-    scan_on_push = false
-  }
-}
+#   image_scanning_configuration {
+#     scan_on_push = false
+#   }
+# }
 
-resource "docker_image" "streamlit_app_docker_image" {
-  name = aws_ecr_repository.streamlit_app_repository.repository_url
-  build {
-    context  = "${path.cwd}/../streamlit_app"
-    platform = "linux/amd64"
-  }
+# resource "docker_image" "streamlit_app_docker_image" {
+#   name = aws_ecr_repository.streamlit_app_repository.repository_url
+#   build {
+#     context  = "${path.cwd}/../streamlit_app"
+#     platform = "linux/amd64"
+#   }
 
-  triggers = {
-    dir_sha = sha1(join("", [for f in fileset("${path.cwd}/../streamlit_app", "**") : filesha1("${path.cwd}/../streamlit_app/${f}")]))
-  }
-  force_remove = true
-}
+#   triggers = {
+#     dir_sha = sha1(join("", [for f in fileset("${path.cwd}/../streamlit_app", "**") : filesha1("${path.cwd}/../streamlit_app/${f}")]))
+#   }
+#   force_remove = true
+# }
 
-resource "docker_registry_image" "streamlit_app_registry_image" {
-  name          = docker_image.streamlit_app_docker_image.name
-  keep_remotely = true
-  triggers = {
-    dir_sha = sha1(join("", [for f in fileset("${path.cwd}/../streamlit_app", "**") : filesha1("${path.cwd}/../streamlit_app/${f}")]))
-  }
-}
-### streamlit end ###
+# resource "docker_registry_image" "streamlit_app_registry_image" {
+#   name          = docker_image.streamlit_app_docker_image.name
+#   keep_remotely = true
+#   triggers = {
+#     dir_sha = sha1(join("", [for f in fileset("${path.cwd}/../streamlit_app", "**") : filesha1("${path.cwd}/../streamlit_app/${f}")]))
+#   }
+# }
+# ### streamlit end ###
 
 ### txt2sql lambda start ###
 resource "aws_ecr_repository" "query_structured_data_lambda_repository" {

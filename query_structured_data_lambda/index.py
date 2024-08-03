@@ -1,10 +1,13 @@
-import build_query_engine
 import json
 import logging
 
-logging.basicConfig(level=logging.DEBUG)
+import build_query_engine
+from connections import Connections
 
-logger = logging.getLogger()
+logging.basicConfig(level=Connections.log_level)
+logger = logging.getLogger(__name__)
+
+MODEL_ALIAS = "Claude3"
 
 
 def log(message):
@@ -19,7 +22,7 @@ def get_response(event, context):
     log("Logging event:")
     log(json.dumps(event))
 
-    query_engine = build_query_engine.create_query_engine(model_name="Claude35")
+    query_engine = build_query_engine.create_query_engine(MODEL_ALIAS)
 
     responses = []
 
@@ -30,12 +33,10 @@ def get_response(event, context):
 
     # Only allow one str, to mitigate mixed prompt injection
     if isinstance(user_input, str):
-
         log(f"Question {user_input}")
-        if api_path in ["/playerstats"]:
+        if api_path in ["/querydb"]:
             response = query_engine.query(user_input)
 
-            
             final_query = response.metadata["sql_query"].replace("\n", " ")
             log(f"Sql query: {final_query}")
             log(f"Provided response: {response.response}")
@@ -57,7 +58,7 @@ def get_response(event, context):
         }
 
     body = f"""
-            Source: {output["source"]}
+            Source: <final_sql_query>{output["source"]}</final_sql_query>
             Returned information: {output["answer"]}
 
             """
@@ -74,32 +75,3 @@ def get_response(event, context):
     responses.append(action_response)
 
     return {"messageVersion": "1.0", "response": action_response}
-
-
-if __name__ == "__main__":
-    get_response(
-        event={
-            "agent": {
-                "alias": "agent-alias",
-                "name": "agent-name",
-                "version": "agent-version",
-                "id": "agent-id",
-            },
-            "sessionId": "216876597295710",
-            "sessionAttributes": {},
-            "promptSessionAttributes": {},
-            "inputText": "How many goals did Thomas score in season 23/24?",
-            "apiPath": "/playerstats",
-            "httpMethod": "GET",
-            "messageVersion": "1.0",
-            "actionGroup": "ChatBotBedrockAgentActionGroup",
-            "parameters": [
-                {
-                    "name": "uc2Question",
-                    "type": "string",
-                    "value": "How many goals did Thomas score in season 23/24?",
-                }
-            ],
-        },
-        context=None,
-    )

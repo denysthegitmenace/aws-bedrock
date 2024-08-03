@@ -1,26 +1,24 @@
-from sqlalchemy import create_engine
-from llama_index.core.objects import ObjectIndex, SQLTableNodeMapping, SQLTableSchema
-from llama_index.core.indices.struct_store import SQLTableRetrieverQueryEngine
-from llama_index.core import VectorStoreIndex
-from llama_index.core import SQLDatabase
-from llama_index.core import ServiceContext
-from llama_index.embeddings.bedrock import BedrockEmbedding
-from llama_index.core.prompts import Prompt
-from connections import Connections
-from prompt_templates import SQL_TEMPLATE_STR, RESPONSE_TEMPLATE_STR, table_details
-from llama_index.core.schema import TextNode
-from llama_index.core.prompts import PromptTemplate
 import csv
 import json
-
 import logging
 
+from connections import Connections
+from llama_index.core import ServiceContext, SQLDatabase, VectorStoreIndex
+from llama_index.core.indices.struct_store import SQLTableRetrieverQueryEngine
+from llama_index.core.objects import ObjectIndex, SQLTableNodeMapping, SQLTableSchema
+from llama_index.core.prompts import Prompt, PromptTemplate
+from llama_index.core.schema import TextNode
+from llama_index.embeddings.bedrock import BedrockEmbedding
+from prompt_templates import RESPONSE_TEMPLATE_STR, SQL_TEMPLATE_STR, TABLE_DETAILS
+from sqlalchemy import create_engine
+
 # Set up logging
-logging.basicConfig(level=logging.DEBUG)
+logging.basicConfig(level=Connections.log_level)
 logger = logging.getLogger(__name__)
 
 NUM_FEW_SHOT_EXAMPLES_TO_CONSIDER = 3
 NUM_TABLES_TO_CONSIDER = 5
+
 
 def create_sql_engine():
     conn_url = f"awsathena+rest://athena.{Connections.region_name}.amazonaws.com/{Connections.text2sql_database}?s3_staging_dir=s3://{Connections.athena_bucket_name}"
@@ -39,7 +37,10 @@ def get_few_shot_retriever(embed_model):
         few_shot_nodes,
         service_context=ServiceContext.from_defaults(embed_model=embed_model, llm=None),
     )
-    return few_shot_index.as_retriever(similarity_top_k=NUM_FEW_SHOT_EXAMPLES_TO_CONSIDER), data_dict
+    return (
+        few_shot_index.as_retriever(similarity_top_k=NUM_FEW_SHOT_EXAMPLES_TO_CONSIDER),
+        data_dict,
+    )
 
 
 def few_shot_examples_fn(few_shot_retriever, data_dict, query_str, **kwargs):
@@ -76,11 +77,9 @@ def create_query_engine(model_name):
 
     llm = Connections.get_bedrock_llm(model_name=model_name, max_tokens=1024)
     service_context = ServiceContext.from_defaults(llm=llm, embed_model=embed_model)
-
-
     # list of table schemas
     table_schema_objs = [
-        SQLTableSchema(table_name=table, context_str=table_details[table])
+        SQLTableSchema(table_name=table, context_str=TABLE_DETAILS[table])
         for table in sql_database._all_tables
     ]
 
@@ -92,7 +91,7 @@ def create_query_engine(model_name):
     obj_index = ObjectIndex.from_objects(
         table_schema_objs,
         table_node_mapping,
-        VectorStoreIndex, # type: ignore
+        VectorStoreIndex,  # type: ignore
         service_context=service_context,
     )
 

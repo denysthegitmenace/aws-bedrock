@@ -2,4 +2,4 @@
 
 Resources: dataset --> https://github.com/sfrechette/adventureworks-neo4j/tree/master/data
 
-![alt text](image.png)
+Youtube Video explaining what's going on --> https://youtu.be/pyWdbgwZyuw

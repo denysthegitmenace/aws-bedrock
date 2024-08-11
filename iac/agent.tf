@@ -2,8 +2,12 @@ resource "aws_bedrockagent_agent" "bedrock_agent" {
   agent_name                  = "bedrock-agent"
   agent_resource_role_arn     = aws_iam_role.agent_service_role.arn
   idle_session_ttl_in_seconds = 500
+  description                 = "An agent for just about any challenge"
   instruction                 = "Do your best to answer user questions. Be friendly, kind, and wise."
   foundation_model            = "anthropic.claude-3-sonnet-20240229-v1:0"
+  tags = {
+    Terraform = "true"
+  }
 }
 
 

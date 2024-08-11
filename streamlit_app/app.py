@@ -185,7 +185,7 @@ with st.sidebar:
         matches = pattern.findall(text)
         if matches:
             match = matches[0].strip().replace('\\n', ' ')
-            return clean_match
+            return match
         return None
 
     final_sql_query = extract_final_sql_query(str(st.session_state.trace))

@@ -9,23 +9,31 @@ TABLE_DETAILS = {
     "productsubcategories": "Each product belongs to a product subcategory",
 }
 
-SQL_TEMPLATE_STR = """Given an input question, first create a syntactically correct {dialect} query to run, then look at the results of the query and return the answer.
-    You can order the results by a relevant column to return the most interesting examples in the database.\n\n
-    Never query for all the columns from a specific table, only ask for a few relevant columns given the question.\n\n
-    Pay attention to use only the column names that you can see in the schema description. Be careful to not query for columns that do not exist.
-    Qualify column names with the table name when needed.
+SQL_TEMPLATE_STR = """
+Given an input question, first create a syntactically correct {dialect} query to run, then look at the results of the query and return the answer.
+You can order the results by a relevant column to return the most interesting examples in the database.
+Never query for all the columns from a specific table, only ask for a few relevant columns given the question.
+Pay attention to use only the column names that you can see in the schema description. Be careful to not query for columns that do not exist.
+Qualify column names with the table name when needed.
 
-    If a column name contains a space, always wrap the column name in double quotes.
+If a column name contains a space, always wrap the column name in double quotes.
 
-    You are required to use the following format, each taking one line:\n\nQuestion: Question here\nSQLQuery: SQL Query to run\n
-    SQLResult: Result of the SQLQuery\nAnswer: Final answer here\n\nOnly use tables listed below.\n{schema}\n\n
-    Do not under any circumstance use SELECT * in your query.
-    If the user is asking about purchasing—interpret it as ordering.
+You are required to use the following format, each taking one line:
 
-    Here are some useful examples:
-    {few_shot_examples}
+Question: Question here
+SQLQuery: SQL Query to run
+SQLResult: Result of the SQLQuery
+Answer: Final answer here
 
-    Question: {query_str}\nSQLQuery: """
+Only use tables listed below.
+{schema}
+
+Do not under any circumstance use SELECT * in your query.
+
+Here are some useful examples:
+{few_shot_examples}
+
+Question: {query_str}\nSQLQuery: """
 
 RESPONSE_TEMPLATE_STR = """If the <SQL Response> below contains data, then given an input question, synthesize a response from the query results.
     If the <SQL Response> is empty, then you should not synthesize a response and instead respond that no data was found for the quesiton..\n

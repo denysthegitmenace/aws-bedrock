@@ -9,7 +9,9 @@ from llama_index.core.objects import ObjectIndex, SQLTableNodeMapping, SQLTableS
 from llama_index.core.prompts import Prompt, PromptTemplate
 from llama_index.core.schema import TextNode
 from llama_index.embeddings.bedrock import BedrockEmbedding
+
 from prompt_templates import RESPONSE_TEMPLATE_STR, SQL_TEMPLATE_STR, TABLE_DETAILS
+
 from sqlalchemy import create_engine
 
 # Set up logging

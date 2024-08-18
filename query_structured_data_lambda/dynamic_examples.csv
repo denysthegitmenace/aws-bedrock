@@ -1,1 +1,4 @@
 "example_input_question","example_output_query"
+"Total number of products supplied by each vendor","SELECT v.vendorname, COUNT(p.productid) AS total_products FROM vendors v JOIN vendorproduct vp ON v.vendorid = vp.vendorid JOIN products p ON vp.productid = p.productid GROUP BY v.vendorname"
+"Products supplied by vendors with a credit rating of 1 or higher and are marked as active","SELECT p.productname, p.productnumber, v.vendorname, v.creditrating FROM products p JOIN vendorproduct vp ON p.productid = vp.productid JOIN vendors v ON vp.vendorid = v.vendorid WHERE v.creditrating >= 1 AND v.activeflag = '1'"
+"List all products along with their category and subcategory names","SELECT p.productname, p.productnumber, psc.subcategoryname, pc.categoryname FROM products p JOIN productsubcategories psc ON p.subcategoryid = psc.subcategoryid JOIN productcategories pc ON psc.categoryid = pc.categoryid"
